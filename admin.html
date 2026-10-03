@@ -787,9 +787,9 @@ function formProduk(p) {
   sub(p ? 'Ubah Produk' : 'Tambah Produk',
     '<label style="position:relative;display:block;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--bg2);cursor:pointer" id="ph">' +
     (p && p.foto ? '<img id="pimg" src="' + esc(p.foto) + '" style="width:100%;height:100%;object-fit:cover" alt="">' : '<img id="pimg" class="hidden" style="width:100%;height:100%;object-fit:cover" alt="">') +
-    '<div id="phTxt" class="col" style="position:absolute;inset:0;align-items:center;justify-content:center;color:#8a6420;' + (p && p.foto ? 'display:none' : '') + '">' + ICON.cam + '<span class="b" style="color:var(--ink)">Ambil / pilih foto</span></div>' +
-    '<span class="btn btn-sm" style="position:absolute;right:12px;bottom:12px;background:rgba(255,255,255,.95);color:var(--ink)">Ganti Foto</span>' +
+    '<div id="phTxt" class="col" style="position:absolute;inset:0;align-items:center;justify-content:center;color:#8a6420;' + (p && p.foto ? 'display:none' : '') + '">' + ICON.cam + '<span class="b" style="color:var(--ink)">Belum ada foto</span></div>' +
     '<input type="file" accept="image/*" id="file" class="hidden"></label>' +
+    '<div class="acts"><label class="btn btn-dark" style="cursor:pointer">' + ICON.cam.replace(/34/g, '22') + 'Kamera<input type="file" accept="image/*" capture="environment" id="fileCam" class="hidden"></label><label class="btn btn-line" style="cursor:pointer">Galeri<input type="file" accept="image/*" id="fileGal" class="hidden"></label></div>' +
     '<div class="card stack"><div class="field"><label class="lbl" for="nama">Nama Produk</label><input class="inp" id="nama" value="' + esc(p ? p.nama : '') + '" placeholder="MIS. BOLU GULUNG MOKA"></div>' +
     '<div class="field"><label class="lbl" for="toko">Toko Asal</label><input class="inp" id="toko" list="tokoList" value="' + esc(p ? p.toko : '') + '" placeholder="MIS. BOLU MERANTI"><datalist id="tokoList">' + Object.keys(tokos).map(function (t) { return '<option value="' + esc(t) + '">'; }).join('') + '</datalist></div>' +
     '<div class="field"><label class="lbl" for="isi">Isi / Ukuran</label><input class="inp" id="isi" value="' + esc(p ? p.isi : '') + '" placeholder="MIS. ISI 8 PCS / 400 GR"></div></div>' +
@@ -819,10 +819,10 @@ function formProduk(p) {
   }
   $('#modal').addEventListener('input', paintU); $('#harga').addEventListener('input', paintU); paintU(); paintV();
   $('#aktif').addEventListener('click', function () { this.classList.toggle('on'); });
-  $('#file').addEventListener('change', function () {
+  ['#file', '#fileCam', '#fileGal'].forEach(function (sel) { $(sel).addEventListener('change', function () {
     var f = this.files[0]; if (!f) return;
     readImage(f, 1200, 0.82).then(function (d) { foto = d; $('#pimg').src = d; $('#pimg').classList.remove('hidden'); $('#phTxt').style.display = 'none'; }).catch(function (e) { toast(e.message, true); });
-  });
+  }); });
   $('#save').addEventListener('click', function () {
     var d = { id: p ? p.id : null, tripId: S.tripId, nama: $('#nama').value, toko: $('#toko').value, isi: $('#isi').value, varian: V, modal: digits($('#modal').value), harga: digits($('#harga').value), kuota: $('#kuota').value, aktif: $('#aktif').classList.contains('on'), fotoBaru: foto };
     if (!d.nama.trim()) return toast('Nama produk wajib diisi', true);
